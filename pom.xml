@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="             http://maven.apache.org/POM/4.0.0             http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>my.resr.allure</groupId>
+    <artifactId>my-rest-allure</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>RestAssured-Allure</name>
+    <description>RestAssured-Allure</description>
+
+    <developers>
+        <developer>
+            <name>sanju</name>
+            <email>sanjaydub@gmail.com</email>
+        </developer>
+    </developers>
+
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <testng.selenium.endpoint>https://google.com</testng.selenium.endpoint>
+        <aspectj.version>1.8.4</aspectj.version>
+		<jetty.http.port>9001</jetty.http.port>
+    </properties>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.6.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8.21</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.2.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <dependency>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-testng</artifactId>
+        <version>2.13.3</version>
+        <scope>test</scope>
+    </dependency>
+		
+		<!-- <dependency> -->
+            <!-- <groupId>ru.yandex.qatools.allure</groupId> -->
+            <!-- <artifactId>allure-testng-adaptor</artifactId> -->
+            <!-- <version>1.5.4</version> -->
+        <!-- </dependency> -->
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.20</version>
+            <configuration>
+				<testFailureIgnore>true</testFailureIgnore>
+                <argLine>
+                    -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                </argLine>
+                <suiteXmlFiles>
+                    <suiteXmlFile>testng.xml</suiteXmlFile>
+                </suiteXmlFiles>
+            </configuration>
+            <dependencies>
+                <dependency>
+                    <groupId>org.aspectj</groupId>
+                    <artifactId>aspectjweaver</artifactId>
+                    <version>${aspectj.version}</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+		<plugin>
+			<groupId>io.qameta.allure</groupId>
+			<artifactId>allure-maven</artifactId>
+			<version>2.8</version>
+			
+			<configuration>
+			   <properties>
+				   <allure.issues.tracker.pattern>http://example.com/%s</allure.issues.tracker.pattern>
+			   </properties>
+			   <allureDownloadUrl>https://dl.bintray.com/qameta/generic/io/qameta/allure/allure/%s/allure-%s.zip</allureDownloadUrl>
+				<reportDirectory>${basedir}/target/allure-reports/</reportDirectory>
+				<!-- <outputDirectory>${basedir}/target/allure-reports/</outputDirectory> -->
+			</configuration>
+			
+		</plugin>
+			 <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.7.v20160115</version>
+                <configuration>
+                    <webAppSourceDirectory>${project.build.directory}/site/allure-maven-plugin</webAppSourceDirectory>
+                    <httpConnector>
+                        <port>${jetty.http.port}</port>
+                    </httpConnector>
+                    <stopKey>stop</stopKey>
+                    <stopPort>1234</stopPort>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <plugins>
+            <plugin>
+                <groupId>ru.yandex.qatools.allure</groupId>
+				<artifactId>allure-maven-plugin</artifactId>
+                <version>2.5</version>
+				<configuration>
+				<outputDirectory>${basedir}/target/allure-reports/</outputDirectory> 
+				<allureResultsDirectory>${basedir}/target/allure-results</allureResultsDirectory> 
+				</configuration>
+            </plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>3.0.0-M4</version>
+				<configuration>
+				  <!-- place your configuration here -->
+				</configuration>
+			  </plugin>
+			  <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.1</version>
+			  </plugin>
+			
+        </plugins>
+    </reporting>
+</project>
